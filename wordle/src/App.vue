@@ -1,23 +1,28 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HomeView from "@/views/HomeView.vue";
+
 </script>
 
 <template>
-
+  <header>
+    <img class="logo" src="./assets/CISPA.png" alt="CISPA logo" />
+  </header>
   <HomeView/>
 
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
 
+header {
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+  width: 100px;
 }
 
 nav {

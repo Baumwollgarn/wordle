@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "vue": "^3.2.47"
+    "sass": "^1.59.3",
+    "scss": "^0.2.4",
+    "vue": "^3.2.47",
+    "vue-confetti": "^2.3.0"
   }
 }

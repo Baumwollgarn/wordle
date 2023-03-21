@@ -1,10 +1,4 @@
-<script setup>
-import WordList from "@/components/WordList.vue";
-import Description from "@/components/Description.vue";
-</script>
-
 <template>
-
   <main>
     <div class="word-list">
       <router-link to="/">Home</router-link>
@@ -13,11 +7,14 @@ import Description from "@/components/Description.vue";
       <router-link to="/level/3">Level 3 (7+ letters)</router-link>
     </div>
     <div class="game-field">
-      <RouterView/>
+      <h1 class="title"> Difficult - Level 3 </h1>
+      <div v-if="word">
+        <GameField :word="word" @set-description="descriptionVisible = true"/>
+      </div>
     </div>
     <div class="description">
       <div v-if="descriptionVisible">
-        <Description :description="description" :is-visible="descriptionVisible" :word="word"/>
+        <Description :description="description" :is-visible="descriptionVisible" :word="word" :image="image"/>
       </div>
     </div>
   </main>
@@ -25,13 +22,18 @@ import Description from "@/components/Description.vue";
 
 <script>
 
+import WordList from "@/components/WordList.vue";
+import GameField from "@/components/GameField.vue";
+import Description from "@/components/Description.vue";
+
 export default{
+  components: {Description, GameField, WordList},
   data() {
     return {
       word: '',
       description: '',
-      image: '',
       words: [],
+      image: '',
       descriptionVisible: false,
     }
   },
@@ -43,10 +45,12 @@ export default{
   },
   async mounted() {
     await this.fetchWords()
-    let randomNumber = Math.floor(Math.random() * this.words.length)
-    this.word = this.words[randomNumber].word.toUpperCase()
-    this.description = this.words[randomNumber].description
-    this.image = this.words[randomNumber].image
+    do {
+      let randomNumber = Math.floor(Math.random() * this.words.length)
+      this.word = this.words[randomNumber].word.toUpperCase()
+      this.description = this.words[randomNumber].description
+      this.image = this.words[randomNumber].image
+    } while (this.word.length <= 6)
   }
 }
 </script>

@@ -1,7 +1,9 @@
 <template>
-  <div class="box" :class="{correct: isGuessed && isCorrect, wrong: isWrong, almost: isGuessed && !isCorrect}">
-      <span v-if="isGuessed || isWrong || isEntered ">{{letter}}</span>
-  </div>
+  <transition name="turn" @enter="turnLetters">
+    <div class="box" :class="{correct: this.isGuessed && this.isCorrect, wrong: this.isWrong, almost: this.isGuessed && !this.isCorrect && !this.isWrong}">
+        <span v-if="this.isGuessed || this.isWrong || this.isEntered ">{{letter}}</span>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -16,21 +18,32 @@ export default {
       type: Boolean,
       default: () => false
     },
+    isGuessed: {
+      type: Boolean,
+      default: () => false
+    },
+    isCorrect: {
+      type: Boolean,
+      default: () => false
+    },
+    isWrong: {
+      type: Boolean,
+      default: () => false
+    },
   },
   data() {
     return {
-      letter2: this.letter,
-      isGuessed: false,
-      isCorrect: false,
-      isWrong: false,
-      isEntered1: this.isEntered
+    }
+  },
+  methods: {
+    turnLetters() {
+      this.$el.classList.add('turn')
     }
   }
-
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .box {
   width: 50px;
   border: 1px solid grey;
@@ -39,24 +52,65 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  font-size: 2.3rem;
   font-weight: 700;
   margin: 5px;
 }
 
 .correct {
-  background: #2ecc71;
   color: white;
+  animation: turnCorrect ease-in-out forwards 2s;
 }
 
 .wrong {
-  background: grey;
   color: white;
+  animation: turnWrong ease-in-out forwards 2s;
 }
 
 .almost {
-  background: #fad53d;
   color: white;
+  animation: turnAlmost ease-in-out forwards 2s;
 }
 
+/* Animation for the letter box to turn 360 on the Y axis when the letter is guessed */
+@keyframes turnCorrect {
+  0% {
+    transform: rotateX(0deg);
+    background: inherit;
+    color: black;
+  }
+  100% {
+    transform: rotateX(360deg);
+    background: #1ec264;
+    color: white;
+  }
+}
+
+@keyframes turnWrong {
+  0% {
+    background: inherit;
+    color: black;
+
+  }
+  100% {
+    background: grey;
+    color: white;
+  }
+}
+
+@keyframes turnAlmost {
+  0% {
+    transform: rotateZ(0deg);
+    background: inherit;
+    color: black;
+  }
+  50% {
+    transform: rotateZ(19deg)
+  }
+  100% {
+    transform: rotateZ(0deg);
+    background: #fad53d;
+    color: white;
+  }
+}
 </style>

@@ -1,12 +1,10 @@
 <template>
   <div v-on:keyup-enter="guessWord" v-on:keyup.delete="removeLastLetter">
-    <div>{{actualLineGuessedLetters}}</div>
     <div class="game-field">
       <div class="word">
         <div v-for="(row, rowIndex) in matrixGuessed" :key="rowIndex" class="word-row">
-          <span style="font-size:6px"> {{row}}</span>
           <div v-for="(letter, letterIndex) in row" :key="letterIndex" class="letter-single" :class="{correct: letter.isGuessed && letter.isCorrect, wrong: letter.isGuessed && letter.isWrong, almost: letter.isGuessed && !letter.isCorrect}">
-            <LetterBox :letter="letter.letter" :is-entered="letter.isEntered"/>
+            <LetterBox :letter="letter.letter" :is-entered="letter.isEntered" :is-wrong="letter.isWrong" :is-correct="letter.isCorrect" :is-guessed="letter.isGuessed"/>
           </div>
         </div>
       </div>
@@ -18,19 +16,22 @@
 
 import LetterBox from "@/components/LetterBox.vue";
 
-let word = 'SPRING'
-let wordArray = word.split('')
 export default {
   name: "GameField",
   components: {LetterBox},
+  props: {
+    word: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      word,
-      wordArray,
+      wordArray: [],
       matrix: [],
-      matrixGuessed: new Array(7).fill(new Array(wordArray.length).fill({letter: '', isGuessed: false, isCorrect: false, isWrong: false})),
+      matrixGuessed: [],
       guessAmount: 0,
-      guessLimit: 7,
+      guessLimit: 5,
       guessedLetters: [],
       wrongLetters: [],
       message: '',
@@ -40,10 +41,13 @@ export default {
   },
   methods: {
     initializeMatrix() {
+      this.wordArray = this.word.toUpperCase().split('')
       for (let i = 0; i < this.guessLimit; i++) {
         this.matrix.push([])
+        this.matrixGuessed.push([])
         for (let j = 0; j < this.wordArray.length; j++) {
           this.matrix[i].push({letter: this.wordArray[j], isGuessed: false, isCorrect: false, isWrong: false})
+          this.matrixGuessed[i].push({letter: '', isGuessed: false, isCorrect: false, isWrong: false, isEntered: false})
         }
       }
     },
@@ -54,6 +58,8 @@ export default {
         return
       }
       if (letter === 'ENTER') {
+        if (this.actualLineGuessedLetters.length !== this.wordArray.length) return
+        this.guessWord()
         this.actualLine++
         this.actualLineGuessedLetters = []
         return
@@ -63,7 +69,6 @@ export default {
       this.actualLineGuessedLetters.push(letter)
       let row = this.actualLine
       let column = this.actualLineGuessedLetters.length - 1
-      console.log(row, column)
       this.matrixGuessed[row][column] = {
         letter: letter,
         isGuessed: false,
@@ -71,7 +76,6 @@ export default {
         isEntered: true,
         isWrong: false,
       }
-      console.log(this.matrixGuessed)
     },
     removeLastLetter() {
       this.actualLineGuessedLetters.pop()
@@ -83,16 +87,55 @@ export default {
         isEntered: false,
       }
     },
+    guessWord() {
+      let guessedWord = this.actualLineGuessedLetters.join('')
+      // Check for each letter if the guessed letter is correct and at the correct spot. If it is, change the letter object to isGuessed: true, isCorrect: true.
+      // If it is not, change the letter object to isGuessed: true, isWrong: true.
+      // If it is in the word but not at the correct spot, change the letter object to isGuessed: true, isCorrect: false.
+      for (let i = 0; i < this.wordArray.length; i++) {
+        let letter = this.wordArray[i]
+        let guessedLetter = this.actualLineGuessedLetters[i]
+        if (letter === guessedLetter) {
+          this.matrixGuessed[this.actualLine][i] = {
+            letter: guessedLetter,
+            isGuessed: true,
+            isCorrect: true,
+            isWrong: false,
+            isEntered: true,
+          }
+        } else if (this.wordArray.includes(guessedLetter)) {
+          this.matrixGuessed[this.actualLine][i] = {
+            letter: guessedLetter,
+            isGuessed: true,
+            isCorrect: false,
+            isWrong: false,
+            isEntered: true,
+          }
+        } else {
+          this.matrixGuessed[this.actualLine][i] = {
+            letter: guessedLetter,
+            isGuessed: true,
+            isCorrect: false,
+            isWrong: true,
+            isEntered: true,
+          }
+        }
+      }
+      if (guessedWord.toUpperCase() === this.word.toUpperCase()) {
+        this.message = 'You won!'
+        this.$emit('set-description', true)
+        document.body.removeEventListener('keyup', this.handleKeyUp)
+      }
+    },
   },
   mounted() {
     this.initializeMatrix()
-
     document.body.addEventListener('keyup', this.handleKeyUp)
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .word {
   display: flex;
   justify-content: center;
@@ -102,11 +145,13 @@ export default {
   width: 100%;
   font-size: 5rem;
   font-weight: 700;
-  color: #2ecc71;
+  color: #000;
 }
 
 .word-row {
   display: flex;
   width: 100%;
 }
+
+
 </style>
