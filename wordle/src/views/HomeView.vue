@@ -1,8 +1,3 @@
-<script setup>
-import WordList from "@/components/WordList.vue";
-import Description from "@/components/Description.vue";
-</script>
-
 <template>
 
   <main>
@@ -15,16 +10,12 @@ import Description from "@/components/Description.vue";
     <div class="game-field">
       <RouterView/>
     </div>
-    <div class="description">
-      <div v-if="descriptionVisible">
-        <Description :description="description" :is-visible="descriptionVisible" :word="word"/>
-      </div>
-    </div>
   </main>
+
 </template>
 
 <script>
-
+let url = import.meta.env.VITE_APP_WORD_URL
 export default{
   data() {
     return {
@@ -37,7 +28,7 @@ export default{
   },
   methods: {
     async fetchWords() {
-      let response = await fetch('http://localhost:8000/words')
+      let response = await fetch(url + '/words')
       this.words = await response.json()
     }
   },
@@ -54,13 +45,12 @@ export default{
 <style scoped>
 main {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
-  height: 90vh;
+  height: 60vh;
 }
 
 .game-field {
-  width: 50vw;
   height: 85vh;
   display: flex;
   justify-content: center;
@@ -75,12 +65,7 @@ main {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-}
-
-.title {
-  color: rgb(90,197,250);
-  font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: 20px;
+  position: relative;
+  left: 0;
 }
 </style>

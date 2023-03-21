@@ -59,6 +59,7 @@ export default {
       }
       if (letter === 'ENTER') {
         if (this.actualLineGuessedLetters.length !== this.wordArray.length) return
+        this.$emit('lettersGuessed', this.actualLineGuessedLetters)
         this.guessWord()
         this.actualLine++
         this.actualLineGuessedLetters = []

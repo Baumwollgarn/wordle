@@ -6,7 +6,7 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "LetterBox",
   props: {
@@ -75,12 +75,10 @@ export default {
 /* Animation for the letter box to turn 360 on the Y axis when the letter is guessed */
 @keyframes turnCorrect {
   0% {
-    transform: rotateX(0deg);
     background: inherit;
     color: black;
   }
   100% {
-    transform: rotateX(360deg);
     background: #1ec264;
     color: white;
   }

@@ -1,5 +1,4 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
 import HomeView from "@/views/HomeView.vue";
 
 </script>
@@ -9,6 +8,7 @@ import HomeView from "@/views/HomeView.vue";
     <img class="logo" src="./assets/CISPA.png" alt="CISPA logo" />
   </header>
   <HomeView/>
+
 
 </template>
 
@@ -21,6 +21,9 @@ header {
   align-items: center;
   flex-direction: column;
 }
+
+
+
 .logo {
   width: 100px;
 }

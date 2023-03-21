@@ -1,14 +1,8 @@
 <template>
-  <main>
-    <div class="word-list">
-      <router-link to="/">Home</router-link>
-      <router-link to="/level/1">Level 1 (3-4 letters)</router-link>
-      <router-link to="/level/2">Level 2 (5-6 letters)</router-link>
-      <router-link to="/level/3">Level 3 (7+ letters)</router-link>
-    </div>
+  <div class="game">
     <div class="game-field">
-      <h1 class="title"> Intermediate - Level 2 </h1>
       <div v-if="word">
+        <h1 class="title"> Intermediate - Level 2 </h1>
         <GameField :word="word" @set-description="descriptionVisible = true"/>
       </div>
     </div>
@@ -17,10 +11,11 @@
         <Description :description="description" :is-visible="descriptionVisible" :word="word" :image="image"/>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>
+let url = import.meta.env.VITE_APP_WORD_URL
 
 import WordList from "@/components/WordList.vue";
 import GameField from "@/components/GameField.vue";
@@ -39,29 +34,20 @@ export default{
   },
   methods: {
     async fetchWords() {
-      let response = await fetch('http://localhost:8000/words')
+      let response = await fetch(`${url}/words/level/2`)
       this.words = await response.json()
     }
   },
   async mounted() {
     await this.fetchWords()
-    do {
-      let randomNumber = Math.floor(Math.random() * this.words.length)
-      this.word = this.words[randomNumber].word.toUpperCase()
-      this.description = this.words[randomNumber].description
-      this.image = this.words[randomNumber].image
-    } while (this.word.length <= 4 || this.word.length > 6)
+    this.word = this.words.word
+    this.description = this.words.description
+    this.image = this.words.image
   }
 }
 </script>
 
 <style scoped>
-main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 90vh;
-}
 
 .game-field {
   width: 50vw;
@@ -81,10 +67,4 @@ main {
   align-items: center;
 }
 
-.title {
-  color: rgb(90,197,250);
-  font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
 </style>

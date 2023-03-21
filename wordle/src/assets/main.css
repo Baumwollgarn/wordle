@@ -20,11 +20,26 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
     place-items: center;
   }
 
   #app {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.title {
+  color: rgb(90,197,250);
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 20px;
 }
