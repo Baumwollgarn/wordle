@@ -1,8 +1,10 @@
 <template>
   <div class="container">
-    <img :src="image" alt="word" v-if="isVisible" class="image">
-    <h2 class="title">{{word}}</h2>
-    <p class="description" v-if="isVisible">{{description}}</p>
+    <!--img :src="image" alt="word" v-if="isVisible" class="image"-->
+    <h2 v-if="isVisible" class="title">{{word}}</h2>
+    <p class="description" v-if="isVisible && description">{{description}}</p>
+    <h2 v-if="cheatDescVisible" class="title">Nice!</h2>
+    <p class="description" v-if="cheatDescVisible"> {{cheatedDescription}}</p>
   </div>
 </template>
 
@@ -15,6 +17,14 @@ export default {
       default: () => 'a'
     },
     description: {
+      type: String,
+      default: () => 'a'
+    },
+    cheatDescVisible: {
+      type: Boolean,
+      default: () => false
+    },
+    cheatedDescription: {
       type: String,
       default: () => 'a'
     },

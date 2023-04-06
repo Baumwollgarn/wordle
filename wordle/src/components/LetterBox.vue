@@ -46,7 +46,7 @@ export default {
 <style scoped lang="scss">
 .box {
   width: 50px;
-  border: 1px solid grey;
+  border: 2px solid rgb(180,180,180);
   border-radius: 5px;
   height: 50px;
   display: flex;

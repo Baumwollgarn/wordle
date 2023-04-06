@@ -3,12 +3,19 @@
     <div class="game-field">
       <div v-if="word">
         <h1 class="title"> Easy - Level 1 </h1>
-        <GameField :word="word" @set-description="descriptionVisible = true"/>
+        <GameField :word="word"
+                   @set-description="descriptionVisible = true"
+                   @set-cheat="cheatDescVisible = true"
+                   :hint="hint"/>
       </div>
     </div>
     <div class="description">
-      <div v-if="descriptionVisible">
-        <Description :description="description" :is-visible="descriptionVisible" :word="word" :image="image"/>
+      <div v-if="descriptionVisible || cheatDescVisible">
+        <Description :description="description"
+                     :is-visible="descriptionVisible"
+                     :word="word" :image="image"
+                     :cheat-desc-visible="cheatDescVisible"
+                     :cheated-description="cheatedDescription"/>
       </div>
     </div>
   </div>
@@ -22,6 +29,9 @@ import Description from "@/components/Description.vue";
 
 export default{
   components: {Description, GameField, WordList},
+  props: {
+    hint: Boolean,
+  },
   data() {
     return {
       word: '',
@@ -29,6 +39,8 @@ export default{
       image: '',
       words: [],
       descriptionVisible: false,
+      cheatDescVisible: false,
+      cheatedDescription: 'Du hast mich gefunden! Dein Osterei ist 12a50eee10e5c7ec02c4dfac4ad519be',
     }
   },
   methods: {
@@ -67,8 +79,8 @@ footer {
   align-items: center;
 }
 
-.word-list, .description {
-  width: 25vw;
+.description {
+  width: 20vw;
   height: 85vh;
   display: flex;
   justify-content: center;

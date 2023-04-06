@@ -23,7 +23,8 @@ export default {
     word: {
       type: String,
       required: true
-    }
+    },
+    hint: Boolean,
   },
   data() {
     return {
@@ -37,6 +38,7 @@ export default {
       message: '',
       actualLine: 0,
       actualLineGuessedLetters: [],
+      letterHint: [],
     }
   },
   methods: {
@@ -50,6 +52,46 @@ export default {
           this.matrixGuessed[i].push({letter: '', isGuessed: false, isCorrect: false, isWrong: false, isEntered: false})
         }
       }
+    },
+    toggleHint() {
+      if(this.hint && this.letterHint.length === 0) {
+        let lettersToGuess = this.wordArray.length > 5 ? 2 : 1
+        for (let i = 0; i < lettersToGuess; i++) {
+          let randomIndex = Math.floor(Math.random() * this.wordArray.length)
+          this.matrixGuessed[this.actualLine][randomIndex] = {
+            letter: this.wordArray[randomIndex],
+            isGuessed: false,
+            isCorrect: true,
+            isWrong: false,
+            isEntered: true,
+          }
+          this.letterHint.push(this.wordArray[randomIndex])
+        }
+      } else if (this.hint && this.letterHint.length > 0) {
+        // get the letters from letterHint and place them in the matrixGuessed where they belong
+        this.letterHint.forEach(letter => {
+          let index = this.wordArray.indexOf(letter)
+          this.matrixGuessed[this.actualLine][index] = {
+            letter: this.wordArray[index],
+            isGuessed: false,
+            isCorrect: false,
+            isWrong: false,
+            isEntered: true,
+          }
+        })
+      } else {
+        this.actualLineGuessedLetters = []
+        this.matrixGuessed[this.actualLine] = this.matrixGuessed[this.actualLine].map(letter => {
+          return {
+            letter: '',
+            isGuessed: false,
+            isCorrect: false,
+            isWrong: false,
+            isEntered: false,
+          }
+        })
+      }
+
     },
     handleKeyUp(event) {
       let letter = event.key.toUpperCase();
@@ -90,6 +132,11 @@ export default {
     },
     guessWord() {
       let guessedWord = this.actualLineGuessedLetters.join('')
+      // Check if person knows the Easter egg :)
+      if (this.actualLineGuessedLetters.join('') === '0904') {
+        this.$emit('set-cheat', true)
+        document.body.removeEventListener('keyup', this.handleKeyUp)
+      }
       // Check for each letter if the guessed letter is correct and at the correct spot. If it is, change the letter object to isGuessed: true, isCorrect: true.
       // If it is not, change the letter object to isGuessed: true, isWrong: true.
       // If it is in the word but not at the correct spot, change the letter object to isGuessed: true, isCorrect: false.
@@ -123,7 +170,10 @@ export default {
         }
       }
       if (guessedWord.toUpperCase() === this.word.toUpperCase()) {
-        this.message = 'You won!'
+        this.$emit('set-description', true)
+        document.body.removeEventListener('keyup', this.handleKeyUp)
+      }
+      if (this.actualLine === this.guessLimit - 1) {
         this.$emit('set-description', true)
         document.body.removeEventListener('keyup', this.handleKeyUp)
       }
@@ -132,7 +182,12 @@ export default {
   mounted() {
     this.initializeMatrix()
     document.body.addEventListener('keyup', this.handleKeyUp)
-  }
+  },
+  watch: {
+    hint() {
+      this.toggleHint()
+    }
+  },
 }
 </script>
 

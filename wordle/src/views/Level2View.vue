@@ -3,7 +3,7 @@
     <div class="game-field">
       <div v-if="word">
         <h1 class="title"> Intermediate - Level 2 </h1>
-        <GameField :word="word" @set-description="descriptionVisible = true"/>
+        <GameField :word="word" @set-description="descriptionVisible = true" :hint="hint"/>
       </div>
     </div>
     <div class="description">
@@ -23,6 +23,9 @@ import Description from "@/components/Description.vue";
 
 export default{
   components: {Description, GameField, WordList},
+  props: {
+    hint: Boolean,
+  },
   data() {
     return {
       word: '',
@@ -58,8 +61,8 @@ export default{
   align-items: center;
 }
 
-.word-list, .description {
-  width: 25vw;
+.description {
+  width: 20vw;
   height: 85vh;
   display: flex;
   justify-content: center;
